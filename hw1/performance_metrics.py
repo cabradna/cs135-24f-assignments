@@ -37,5 +37,11 @@ def calc_root_mean_squared_error(y_N, yhat_N):
     yhat_N = np.atleast_1d(yhat_N)
     assert y_N.ndim == 1
     assert y_N.shape == yhat_N.shape
-    return 0.0  # TODO fixme
+    
+    rmse = np.sqrt(
+        1/len(y_N) * 
+        np.sum(np.power((y_N - yhat_N), 2))
+    )
+    
+    return np.round(rmse, 6)
 
