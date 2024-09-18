@@ -93,7 +93,7 @@ def train_models_and_calc_scores_for_n_fold_cv(
 
 
 def make_train_and_test_row_ids_for_n_fold_cv(
-        n_examples=0, n_folds=3, random_state=0, test_size=0.2):
+        n_examples=0, n_folds=3, random_state=0):
     ''' Divide row ids into train and test sets for n-fold cross validation.
 
     Will *shuffle* the row ids via a pseudorandom number generator before
