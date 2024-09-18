@@ -60,15 +60,40 @@ def train_models_and_calc_scores_for_n_fold_cv(
 
     # TODO define the folds here by calling your function
     # e.g. ... = make_train_and_test_row_ids_for_n_fold_cv(...)
+    train_ids_per_fold, test_ids_per_fold = make_train_and_test_row_ids_for_n_fold_cv(x_NF.shape[0], n_folds=n_folds, random_state=random_state)
 
     # TODO loop over folds and compute the train and test error
     # for the provided estimator
+            
+    train_error_per_fold = np.array([])
+    test_error_per_fold = np.array([])
+    for idx in range(n_folds):
+        train_idxs = train_ids_per_fold[idx]
+        test_idxs = test_ids_per_fold[idx]
+        
+        x_curr_train, x_curr_test = x_NF[train_idxs], x_NF[test_idxs]
+        y_curr_train, y_curr_test = y_N[train_idxs], y_N[test_idxs]
+        estimator.fit(x_curr_train, y_curr_train)
+        y_pred_train = estimator.predict(x_curr_train)
+        y_pred_test = estimator.predict(x_curr_test)
+        
+        train_error_per_fold = np.append(
+            train_error_per_fold, 
+            [calc_root_mean_squared_error(y_curr_train, y_pred_train)]
+            )
+        test_error_per_fold = np.append(
+            test_error_per_fold,
+            [calc_root_mean_squared_error(y_curr_test, y_pred_test)]
+        )
+        
+        
+        
 
     return train_error_per_fold, test_error_per_fold
 
 
 def make_train_and_test_row_ids_for_n_fold_cv(
-        n_examples=0, n_folds=3, random_state=0):
+        n_examples=0, n_folds=3, random_state=0, test_size=0.2):
     ''' Divide row ids into train and test sets for n-fold cross validation.
 
     Will *shuffle* the row ids via a pseudorandom number generator before
@@ -136,11 +161,18 @@ def make_train_and_test_row_ids_for_n_fold_cv(
         random_state = np.random.RandomState(int(random_state))
 
     # TODO obtain a shuffled order of the n_examples
-
-    train_ids_per_fold = list()
-    test_ids_per_fold = list()
+    indeces = np.arange(0, n_examples, 1)
+    random_state.shuffle(indeces)    
     
     # TODO establish the row ids that belong to each fold's
     # train subset and test subset
+    
+    test_ids_per_fold = np.array_split(indeces, n_folds)
+    train_ids_per_fold = [
+        np.concatenate(list(filter(
+            lambda current_train_fold: not np.array_equal(current_train_fold, current_test_fold), test_ids_per_fold
+        ))) for current_test_fold in test_ids_per_fold
+    ]
+        
 
     return train_ids_per_fold, test_ids_per_fold
