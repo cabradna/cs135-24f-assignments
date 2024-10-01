@@ -110,10 +110,10 @@ class LeastSquaresLinearRegressor(object):
         yhat_M : 1D array, size M
             Each value is the predicted scalar for one example
         '''
-        yhat_M = [np.dot(self.w_F, x_MF[i]) + self.b for i in range(x_MF.shape[0])]
+        yhat_M = np.array([np.dot(self.w_F, x_MF[i]) + self.b for i in range(x_MF.shape[0])])
         
         # TODO FIX ME
-        return np.asarray([0.0])
+        return yhat_M
 
 
 
