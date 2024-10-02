@@ -58,11 +58,11 @@ def calc_TP_TN_FP_FN(ytrue_N, yhat_N):
     yhat_N = np.asarray(yhat_N, dtype=np.int32)
     
     # TODO fix by calculating the number of true pos, true neg, etc.
-    TP  = 0
-    TN = 0
-    FP = 0
-    FN = 0
-    return None  # TODO fix me
+    TP = sum(ytrue_N*2-yhat_N==1)
+    TN = sum(ytrue_N*2-yhat_N==0)
+    FP = sum(ytrue_N*2-yhat_N==-1)
+    FN = sum(ytrue_N*2-yhat_N==2)
+    return TP, TN, FP, FN
 
 
 def calc_ACC(ytrue_N, yhat_N):
@@ -98,7 +98,11 @@ def calc_ACC(ytrue_N, yhat_N):
     # You should *use* your calc_TP_TN_FP_FN function from above
     # Hint: make sure denominator will never be exactly zero
     # by adding a small value like 1e-10
-    return None  # TODO fix me
+    TP, TN, FP, FN = calc_TP_TN_FP_FN(ytrue_N, yhat_N)
+    numerator = TP+TN
+    denominator = TP+TN+FP+FN+1e-10
+    
+    return numerator/denominator
 
 
 
@@ -142,7 +146,11 @@ def calc_TPR(ytrue_N, yhat_N):
     # You should *use* your calc_TP_TN_FP_FN function from above
     # Hint: make sure denominator will never be exactly zero
     # by adding a small value like 1e-10
-    return None  # TODO fix me
+    TP, TN, FP, FN = calc_TP_TN_FP_FN(ytrue_N, yhat_N)
+    numerator = TP
+    denominator = TP+FN+1e-10
+    
+    return numerator/denominator
 
 
 def calc_PPV(ytrue_N, yhat_N):
@@ -185,5 +193,9 @@ def calc_PPV(ytrue_N, yhat_N):
     # You should *use* your calc_TP_TN_FP_FN function from above
     # Hint: make sure denominator will never be exactly zero
     # by adding a small value like 1e-10
-    return None  # TODO fix me
+    TP, TN, FP, FN = calc_TP_TN_FP_FN(ytrue_N, yhat_N)
+    numerator = TP
+    denominator = TP+FP+1e-10
+    
+    return numerator/denominator
 
