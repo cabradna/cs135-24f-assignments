@@ -67,4 +67,20 @@ def calc_k_nearest_neighbors(data_NF, query_QF, K=1):
     '''
 
     # TODO fixme
-    return None
+    data_N, data_F = data_NF.shape
+    query_Q, query_F = query_QF.shape
+
+    if (K < 1) or (K > data_N):
+
+        return "Invalid value for K."
+    
+    assert data_F == query_F, "Data and query must have the same dimensionality."
+    
+    neighb_QKF = np.empty((query_Q, K, data_F))
+
+    for idx, query in enumerate(query_QF):
+        distances = np.array([np.linalg.norm(data_point - query) for data_point in data_NF])
+        nearest_neighbors = np.argsort(distances)
+        neighb_QKF[idx] = data_NF[nearest_neighbors[:K]]
+
+    return neighb_QKF
