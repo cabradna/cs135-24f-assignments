@@ -75,10 +75,25 @@ class LeastSquaresLinearRegressor(object):
                 \sum_{n=1}^N (y_n - b - \sum_f x_{nf} w_f)^2
         '''      
         N, F = x_NF.shape
+        n_samples = y_N.shape[0]
         
         # Hint: Use np.linalg.solve
         # Using np.linalg.inv may cause issues (see day03 lab) 
-        pass # TODO fixme
+        assert N > 0, "Cannot fit model with no samples."
+        assert F > 0, "Cannot fit model with no features."
+        assert n_samples == N, "The number of samples must be equal for the data points and target vars."
+        
+        # Estimating weights
+        xtilde_NG = np.hstack([x_NF, np.ones((N, 1))])
+        xTx_GG = np.dot(xtilde_NG.T, xtilde_NG)
+        theta_G1 = np.linalg.solve(xTx_GG, np.dot(xtilde_NG.T, y_N))
+        # Estimate bias
+        self.w_F = theta_G1[:-1]
+        self.b = theta_G1[-1]
+        
+        
+        
+        pass
 
 
     def predict(self, x_MF):
@@ -95,8 +110,10 @@ class LeastSquaresLinearRegressor(object):
         yhat_M : 1D array, size M
             Each value is the predicted scalar for one example
         '''
+        yhat_M = np.array([np.dot(self.w_F, x_MF[i]) + self.b for i in range(x_MF.shape[0])])
+        
         # TODO FIX ME
-        return np.asarray([0.0])
+        return yhat_M
 
 
 
